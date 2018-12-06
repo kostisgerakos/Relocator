@@ -1,0 +1,44 @@
+{
+  "type": "record",
+  "name": "AlgorithmStart",
+  "namespace": "eu.rawfie.general.service.types",
+  "doc": "Start the execution of specific algorithm with certain parameters",
+  "fields": [
+    {
+      "name": "destinationModule",
+      "type": {
+        "type": "string",
+        "avro.java.string": "String"
+      },
+      "doc": "Canonical name of the controlled module"
+    },
+    {
+      "name": "types",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "enum",
+          "name": "AlgorithmTypeEnum",
+          "symbols": [
+            "average",
+            "maximum",
+            "minimum",
+            "datareporting"
+          ]
+        }
+      },
+      "doc": "Applicable quantities"
+    },
+    {
+      "name": "parameters",
+      "type": [
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        },
+        "null"
+      ],
+      "doc": "Pass the parameters of the algorithm (if any)"
+    }
+  ]
+}

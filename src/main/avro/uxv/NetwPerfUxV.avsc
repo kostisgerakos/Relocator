@@ -1,0 +1,38 @@
+{
+  "type" : "record",
+  "name" : "NetwPerfUxV",
+  "namespace" : "eu.rawfie.uxv",
+  "doc": "UxV network performance report",
+  "fields" : [ {
+      "name": "header",
+      "type":  "eu.rawfie.uxv.Header"
+  }, {
+    "name" : "interface_name",
+    "type": "string",
+    "doc" : "Network interface identifier"
+  }, {
+    "name" : "bitrate",
+    "type" : "float",
+    "unit" : "Kbps",
+    "doc" : "Effective bitrate"
+  }, {
+    "name" : "latency",
+    "type" : "float",
+    "unit" : "ms",
+    "doc" : "Average latency for posting messages to the bus"
+  }, {
+    "name" : "lqi",
+    "type" : "int",
+    "unit" : "indicator min 0 max 70",
+    "doc" : "Wireless link quality indicator"
+  }, {
+    "name" : "rssi",
+    "type" : "int",
+    "unit" : "dB(m)",
+    "doc" : "Average RSSI of the network connection"
+  }, {
+    "name" : "active",
+    "type" : "boolean",
+    "doc" : "Connection currently in use to interact with the message bus"
+  } ]
+}

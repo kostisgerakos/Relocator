@@ -1,0 +1,25 @@
+{
+  "type" : "record",
+  "name" : "CamTrigger",
+  "namespace" : "eu.rawfie.uxv",
+  "doc": "Enabled/disable periodic triggering of the camera or request a single image",
+  "fields" : [ 
+  	{
+      "name": "header",
+      "type":  "Header"
+    }, {
+    "name" : "command",
+    "doc" : "Command to send to the camera",
+    "type" : {
+      "type" : "enum",
+      "name" : "CamTriggerEnum",
+      "namespace" : "eu.rawfie.uxv",
+      "symbols" : ["ONCE", "DISTANCE_INTERVAL", "TIME_INTERVAL", "STOP"]
+    }
+  },
+    {
+    "name": "interval",
+    "type": "float",
+    "doc": "Interval between images (metres for DISTANCE_INTERVAL, seconds for TIME_INTERVAL, 0 otherwise)"
+  }]
+}

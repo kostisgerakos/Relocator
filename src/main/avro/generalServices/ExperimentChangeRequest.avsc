@@ -1,0 +1,61 @@
+{
+  "type" : "record",
+  "name" : "ExperimentChangeRequest",
+  "namespace" : "eu.rawfie.general.service.types",
+  "fields" : [ {
+    "name" : "executionId",
+    "type" : {
+      "type" : "string",
+      "avro.java.string" : "String"
+    }
+  }, {
+    "name" : "script",
+    "type" : {
+      "type" : "string",
+      "avro.java.string" : "String"
+    }
+  }, {
+    "name" : "testbedId",
+    "type" : {
+      "type" : "string",
+      "avro.java.string" : "String"
+    }
+  }, {
+    "name" : "isIndoor",
+    "type" : "boolean",
+    "default" : false
+  }, {
+    "name" : "resourceNames",
+    "type" : {
+      "type" : "array",
+      "items" : "string"
+    }
+  }, {
+    "name" : "partitionids",
+    "type" : {
+      "type" : "array",
+      "items" : "int"
+    }
+  }, {
+      "name": "accuracy",
+      "type": "double",
+      "unit": "m",
+      "doc": "Desired accuracy for the waypoint-navigation procedure"
+  }, {
+     "name" : "takeOffHeights",
+     "type":["null",
+     {   "type" : "array",
+        "items" : "double"
+     }
+     ],
+     "default":null,
+     "unit": "m",
+     "doc": "Desired take off height - For UAVs only"
+    },
+     {
+    "name" : "dynamicNavigation",
+    "type" : "boolean",
+    "default" : false
+  }
+   ]
+}

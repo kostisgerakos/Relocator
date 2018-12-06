@@ -1,0 +1,19 @@
+{
+  "type" : "record",
+  "name" : "UAVState",
+  "namespace" : "eu.rawfie.uxv",
+  "doc": "Publishes the state of the UAV",
+  "fields" : [ {
+      "name": "header",
+      "type": "eu.rawfie.uxv.Header"
+    }, {
+    "name" : "state",
+	  "doc" : "Current state of the UAV",
+    "type" : {
+      "type" : "enum",
+      "name" : "UAVStateEnum",
+      "namespace" : "eu.rawfie.uxv",
+      "symbols" : ["DISARMED", "ARMED", "MISSION_READY", "STOPPED"]
+    }
+  } ]
+}

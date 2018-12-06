@@ -1,0 +1,10 @@
+{
+  "type" : "record",
+  "name" : "RTL",
+  "namespace" : "eu.rawfie.uxv.commands",
+   "doc": "Command a UΑV to return to its initial position ",
+  "fields" : [  {
+      "name": "header",
+      "type": "eu.rawfie.uxv.Header"
+    } ]
+}

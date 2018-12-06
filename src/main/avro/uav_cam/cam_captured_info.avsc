@@ -1,0 +1,59 @@
+{
+  "type" : "record",
+  "name" : "CamCapturedInfo",
+  "namespace" : "eu.rawfie.uxv",
+  "doc": "Info of a captured imaged",
+  "fields" : [
+  	{
+      "name": "header",
+      "type":  "Header"
+    },
+  {
+    "name": "lat",
+    "type": "float",
+    "unit": "degree",
+    "doc": "Latitude where image was taken"
+  },
+  {
+    "name": "lon",
+    "type": "float",
+    "unit": "degree",
+    "doc": "Longitude where image was taken)"
+  },
+  {
+    "name": "alt",
+    "type": "float",
+    "unit": "m",
+    "doc": "Altitude AMSL (Above Mean Sea Level) where image was taken"
+  }, {
+    "name": "relative_alt",
+    "type": "float",
+    "unit": "m",
+    "doc": "Altitude above the ground"
+  },{
+    "name": "roll",
+    "type": "float",
+    "doc": "Camera Roll angle (earth frame, +-180)"
+  }, {
+    "name": "pitch",
+    "type": "float",
+    "doc": "Camera Pitch angle (earth frame, +-180)"
+  }, {
+    "name": "yaw",
+    "type": "float",
+    "doc": "Camera Yaw (earth frame, 0-360, true)"
+  }, {
+    "name": "image_index",
+    "type": "int",
+    "doc": "Zero-based index of the image since vehicle armed"
+  },{
+    "name": "capture_result",
+    "type": "int",
+    "doc": "Indicator for success (1) or failure (0) capturing the image"
+  },
+  {
+    "name": "file_url",
+    "type": "string",
+    "doc": "URL of image taken"
+  }]
+}

@@ -1,0 +1,32 @@
+{
+  "type" : "record",
+  "name" : "ExperimentStatusMsg",
+  "namespace" : "eu.rawfie.general.service.types",
+  "fields" : [ {
+    "name" : "executionId",
+    "type" : {
+      "type" : "string",
+      "avro.java.string" : "String"
+    }
+  }, {
+    "name" : "status",
+    "type" : {
+      "type" : "enum",
+      "name" : "ExperimentStatusEnum",
+      "symbols" : [ "BOOKED", "ONGOING", "CHANGED", "COMPLETED", "BLOCKED", "CANCELED", "FAILED" ]
+    }
+  }, {
+    "name" : "testbedId",
+    "type" : [ "null", {
+      "type" : "string",
+      "avro.java.string" : "String"
+    } ],
+    "default" : null
+  }, {
+    "name" : "timestamp",
+    "type" : {
+      "type" : "long",
+      "CustomEncoding" : "DateAsLongEncoding"
+    }
+  } ]
+}

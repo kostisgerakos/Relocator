@@ -1,0 +1,68 @@
+{
+  "type": "record",
+  "name": "ObjectDistance",
+  "namespace": "eu.rawfie.uxv.nested",
+  "doc": "Distance to the closest object at a specific orientation of the UxV",
+  "fields": [
+    {
+      "name": "header",
+      "type": {
+        "type": "record",
+        "name": "Header",
+        "fields": [
+          {
+            "name": "sourceSystem",
+            "type": "string"
+          },
+          {
+            "name": "sourceModule",
+            "type": "string"
+          },
+          {
+            "name": "time",
+            "type": "long"
+          }
+        ]
+      }
+    },
+    {
+      "name": "min_d",
+      "type": "float",
+      "unit": "METER",
+      "doc": "Minimum distance the sensor can measure"
+    },
+    {
+        "name": "max_d",
+        "type": "float",
+        "unit": "METER",
+        "doc": "Maximum distance the sensor can measure"
+    },
+    {
+        "name": "distance",
+        "type": "float",
+        "unit": "METER",
+        "doc": "Current distance of the UxV from the closest object"
+    },
+    {
+        "name": "orientation",
+        "type": {
+          "type": "enum",
+          "name": "UxVOrientationEnum",
+          "namespace" : "eu.rawfie.uxv",
+          "symbols": [
+            "ROTATION_NONE",
+            "ROTATION_YAW_45",
+            "ROTATION_YAW_90",
+            "ROTATION_YAW_135",
+            "ROTATION_YAW_180",
+            "ROTATION_YAW_225",
+            "ROTATION_YAW_270",
+            "ROTATION_YAW_315",
+            "ROTATION_PITCH_90",
+            "ROTATION_PITCH_270"
+          ]
+        },
+        "doc": "Direction the distance sensor of the UxV faces"
+    }
+  ]
+}

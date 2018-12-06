@@ -1,0 +1,10 @@
+{
+  "type" : "record",
+  "name" : "Arm",
+  "namespace" : "eu.rawfie.uxv.commands",
+   "doc": "Command a UAV to arm its motors",
+  "fields" : [  {
+      "name": "header",
+      "type": "eu.rawfie.uxv.Header"
+    } ]
+}

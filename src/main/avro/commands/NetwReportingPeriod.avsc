@@ -1,0 +1,15 @@
+{
+  "type" : "record",
+  "name" : "NetwReportingPeriod",
+  "namespace" : "eu.rawfie.uxv.commands",
+  "doc": "Command for setting the network performance reporting period on the UxVs",
+  "fields" : [ {
+      "name": "header",
+      "type":  "eu.rawfie.uxv.Header"
+  }, {
+    "name" : "period",
+    "type" : "int",
+    "unit" : "s",
+    "doc" : "Reporting period"
+  } ]
+}

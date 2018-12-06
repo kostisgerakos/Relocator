@@ -1,0 +1,14 @@
+{
+  "type" : "record",
+  "name" : "Takeoff",
+  "namespace" : "eu.rawfie.uxv.commands",
+  "doc": "Command a UAV to takeoff to a given height",
+  "fields" : [  {
+      "name": "header",
+      "type": "eu.rawfie.uxv.Header"
+    }, {
+    "name" : "height",
+    "type" : "double",
+	"doc" : "Target height to takeoff"
+  } ]
+}

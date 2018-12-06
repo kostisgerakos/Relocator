@@ -1,0 +1,18 @@
+{
+  "type" : "record",
+  "name" : "UAVNotification",
+  "namespace" : "eu.rawfie.uxv",
+  "doc": "Notifies the execution status of a RAWFIE command or the UAV control transition to the human operator/pilot",
+  "fields" : [  {
+      "name": "header",
+      "type": "eu.rawfie.uxv.Header"
+    }, {
+    "name" : "notification",
+    "type" : {
+      "type" : "enum",
+      "name" : "UAVNotificationEnum",
+      "namespace" : "eu.rawfie.uxv",
+      "symbols" : [ "ARM_OK", "NOT_ARMED", "TAKEOFF_OK", "GOTO_OK", "RTL_OK", "ABORT_OK", "INVALID_COMMAND", "AUTO_ABORT" ]
+    }
+  } ]
+}

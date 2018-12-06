@@ -1,0 +1,25 @@
+{
+  "type" : "record",
+  "name" : "ExperimentCancelRequest",
+  "namespace" : "eu.rawfie.general.service.types",
+  "fields" : [ {
+    "name" : "executionId",
+    "type" : {
+      "type" : "string",
+      "avro.java.string" : "String"
+    }
+  }, {
+    "name" : "testbedId",
+    "type" : [ "null", {
+      "type" : "string",
+      "avro.java.string" : "String"
+    } ],
+    "default" : null
+  }, {
+    "name" : "timestamp",
+    "type" : {
+      "type" : "long",
+      "CustomEncoding" : "DateAsLongEncoding"
+    }
+  }  ]
+}

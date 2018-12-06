@@ -1,0 +1,32 @@
+{
+  "type" : "record",
+  "name" : "TestbedServicesHealthStatus",
+  "namespace" : "eu.rawfie.general.service.types",
+  "fields" : [ {
+    "name" : "testbed_id",
+    "type" : "string"
+  }, {
+    "name" : "component_name",
+    "type" : "string"
+  }, {
+    "name" : "msg_timestamp",
+    "type" : {
+      "type" : "long",
+      "CustomEncoding" : "DateAsLongEncoding"
+    }
+  }, {
+    "name" : "health_status",
+    "type" : {
+      "type" : "enum",
+      "name" : "TestbedServicesHealthStatusEnum",
+      "symbols" : [ "OK", "WARNING", "CRITICAL" ]
+    }
+  }, {
+    "name" : "message",
+    "type" : [
+     "string",
+     "null"
+     ],
+	"doc": "String containing the details of the current status"
+  }]
+}

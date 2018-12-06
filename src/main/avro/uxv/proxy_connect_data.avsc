@@ -1,0 +1,38 @@
+{
+   "type":"record",
+   "name":"ProxyConnectData",
+   "namespace":"eu.rawfie.uxv",
+   "doc":"UxV proximity component connectivity data",
+   "fields":[
+        {
+      "name": "header",
+      "type": "Header"
+   	 },
+      {
+         "name":"srcaddress",
+         "type":"int",
+         "doc":"Source address of the beacon received by the proximity component"
+      },
+      {
+         "name":"myaddress",
+         "type":"int",
+         "doc":"Address of the node that received the beacon to match with own UxV name"
+      },
+      {
+         "name":"sequence",
+         "type":"int",
+         "doc":"Sequence number of the received beacon"
+      },
+      {
+         "name":"rssi",
+         "type":"int",
+         "doc":"Received signal strength indicator associated of the received beacon",
+         "unit":"dB(m)"
+      },
+      {
+         "name":"lqi",
+         "type":"int",
+         "doc":"CC1101 radio linq quality indicator of the received beacon"
+      }
+   ]
+}

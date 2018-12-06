@@ -1,0 +1,36 @@
+{
+  "type" : "record",
+  "name" : "GlobalNetwPerf",
+  "namespace" : "eu.rawfie.general.service.types",
+  "doc": "High-level network performance indicator for all UxVs",
+  "fields" : [ {
+    "name" : "resourceNames",
+    "type" : {
+      "type" : "array",
+      "items" : "string"
+    },
+    "doc" : "Array of UxV canonical names"
+  }, {
+    "name" : "ifaces",
+    "type" : {
+      "type" : "array",
+      "items" : "int"
+    },
+    "doc" : "Array of interface identifiers"
+  }, {
+    "name" : "indicators",
+    "type" : {
+      "type" : "array",
+      "items" : "int",
+      "unit" : "Min 0, Max 5"
+    },
+    "doc" : "Array of network performance indicators"
+  }, {
+    "name" : "comments",
+    "type" : {
+      "type" : "array",
+      "items" : "string"
+    },
+    "doc" : "Array of comments related to network performance"
+  } ]
+}

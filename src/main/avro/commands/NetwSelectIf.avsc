@@ -1,0 +1,14 @@
+{
+  "type" : "record",
+  "name" : "NetwSelectIf",
+  "namespace" : "eu.rawfie.uxv.commands",
+  "doc": "Command for selecting the network interface that the UxV shall use to connect to the message bus",
+  "fields" : [ {
+      "name": "header",
+      "type":  "eu.rawfie.uxv.Header"
+  }, {
+    "name" : "iface",
+    "type" : "int",
+    "doc" : "Interface identifier as in the resources_net_interface table of the testbed data base"
+  } ]
+}

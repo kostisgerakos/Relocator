@@ -1,0 +1,40 @@
+{
+   "type":"record",
+   "name":"RCHealthStatus",
+   "namespace":"eu.rawfie.general.service.types",
+   "fields":[
+      {
+         "name":"testbedId",
+         "type":{
+            "type":"string",
+            "avro.java.string":"String"
+         }
+      },
+      {
+         "name":"timestamp",
+         "type":"long",
+         "unit":"ms"
+      },
+      {
+         "name":"healthStatus",
+         "type":{
+            "type":"enum",
+            "name":"RCHealthStatusEnum",
+            "symbols":[
+               "OK",
+               "WARNING",
+               "CRITICAL"
+            ]
+         }
+      },
+      {
+         "name":"message",
+         "type":{
+            "type":"string",
+            "avro.java.string":"String"
+         },
+         "default":null,
+         "doc":"String containing the details of the current status"
+      }
+   ]
+}

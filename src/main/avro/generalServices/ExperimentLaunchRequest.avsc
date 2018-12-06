@@ -1,0 +1,19 @@
+{
+  "type" : "record",
+  "name" : "ExperimentLaunchRequest",
+  "namespace" : "eu.rawfie.general.service.types",
+  "fields" : [ {
+    "name" : "executionId",
+    "type" : {
+      "type" : "string",
+      "avro.java.string" : "String"
+    }
+  }, {
+    "name" : "testbedId",
+    "type" : {
+      "type" : "string",
+      "avro.java.string" : "String"
+    }
+  }
+   ]
+}
