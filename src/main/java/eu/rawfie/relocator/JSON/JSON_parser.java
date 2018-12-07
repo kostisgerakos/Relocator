@@ -216,7 +216,8 @@ public class JSON_parser {
     public static List<String> getResourceNames() { return experimentStartRequest.getResourceNames(); }
     public static int getExecutionId(){ return Integer.parseInt(experimentStartRequest.getExecutionId().toString()); }
     public static JSONArray getScriptData() { return JSONObject.fromObject(experimentStartRequest.getScript()).getJSONArray("data"); }
-    private static JSONArray getNodeEvents() { return JSONObject.fromObject(experimentStartRequest.getScript()).getJSONArray("nodeEvents"); }
+    public static JSONArray getNodeNames() { return JSONObject.fromObject(experimentStartRequest.getScript()).getJSONArray("nodeNames"); }
+    public static JSONArray getNodeEvents() { return JSONObject.fromObject(experimentStartRequest.getScript()).getJSONArray("nodeEvents"); }
 
 
 }

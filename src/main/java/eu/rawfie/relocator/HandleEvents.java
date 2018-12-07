@@ -39,10 +39,18 @@ public class HandleEvents {
         System.out.println(dn);
 
         if(dn){
-            String script = JSON_parser.getScriptData().toString();
-            if(!experimentChanged) {
+            String data = JSON_parser.getScriptData().toString();
+            
+            JSONObject script = new JSONObject( );
+            script.element("data", data);
+            script.element("nodeNames", JSON_parser.getNodeNames());
+            script.element("nodeEvents", JSON_parser.getNodeEvents());
+            script.element("Testbed", JSON_parser.getTestbed());
+            script.element("TestbedArea", JSON_parser.getTestbedArea());
+            
+            //if(!experimentChanged) {
             	experimentChanged = true;
-	            ExperimentChangeRequest experimentChangeRequest = JSON_Generator.generateExperimentChangeRequest(script, true);
+	            ExperimentChangeRequest experimentChangeRequest = JSON_Generator.generateExperimentChangeRequest(script.toString(), true);
 	            
 	            Properties props = new Properties();
 	            props.put("bootstrap.servers", "eagle5.di.uoa.gr:9092");
@@ -57,13 +65,14 @@ public class HandleEvents {
 
 	            
 	            System.out.println(experimentChangeRequest);
-            }
+          //}
 
             relocator.navigateDevices();
 
             if(JSON_parser.getDynamicGoto().getLocation().getLatitude() == -1 &&
                     JSON_parser.getDynamicGoto().getLocation().getLongitude() == -1) {
-            	ExperimentChangeRequest experimentChangeRequest = JSON_Generator.generateExperimentChangeRequest(script, false);
+            	//ExperimentChangeRequest
+            	experimentChangeRequest = JSON_Generator.generateExperimentChangeRequest(script.toString(), false);
                 System.out.println(experimentChangeRequest);
             }
         }
