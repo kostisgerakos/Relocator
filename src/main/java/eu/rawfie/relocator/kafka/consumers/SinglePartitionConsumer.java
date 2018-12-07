@@ -2,7 +2,6 @@ package eu.rawfie.relocator.kafka.consumers;
 
 import java.util.Arrays;
 import java.util.Properties;
-import java.util.function.Predicate;
 
 import org.apache.avro.generic.GenericRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -10,11 +9,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.TopicPartition;
 
-import com.google.common.eventbus.EventBus;
 
-import eu.rawfie.general.service.types.ExperimentStartRequest;
-import eu.rawfie.uxv.Location;
-import eu.rawfie.uxv.commands.DynamicGoto;
 
 
 public class SinglePartitionConsumer {
