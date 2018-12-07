@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import org.javatuples.Quartet;
+import org.javatuples.Triplet;
 
 import com.google.common.eventbus.EventBus;
 
@@ -23,18 +24,18 @@ public class MultiplePartitionConsumers {
   private List<RunnablePartitionConsumer> partitionConsumers;
 
  
-  public MultiplePartitionConsumers(final String brokers,String schemaRegistry, String groupId,final ArrayList<Quartet<String,Integer,Predicate,Goto>> quartetsWithPredicates, final EventBus eventBus ) {
+  public MultiplePartitionConsumers(final String brokers,String schemaRegistry, String groupId,final ArrayList<Triplet<String,Integer,Predicate>> tripletsWithPredicates, final EventBus eventBus ) {
     //this.brokers = brokers;
     //this.schemaRegistry = schemaRegistry;
     //this.groupId = groupId;
     //this.topic = quartet.getValue0();
     //this.partitionNumberList = partitionNumberList;
     partitionConsumers = new ArrayList<>();
-    for (Quartet<String, Integer, Predicate, Goto> quartet : quartetsWithPredicates) {
+    for (Triplet<String, Integer, Predicate> triplet : tripletsWithPredicates) {
     	RunnablePartitionConsumer ncThread =
-          new RunnablePartitionConsumer(brokers,schemaRegistry, groupId, quartet.getValue0(), quartet.getValue1(),quartet.getValue2(),quartet.getValue3(),eventBus);
+          new RunnablePartitionConsumer(brokers,schemaRegistry, groupId, triplet.getValue0(), triplet.getValue1(),triplet.getValue2(),eventBus);
       partitionConsumers.add(ncThread);
-      System.out.println("Started consumer for partition" + quartet.getValue1());
+      System.out.println("Started consumer for partition" + triplet.getValue1());
     }
   }
  

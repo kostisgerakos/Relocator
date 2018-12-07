@@ -17,11 +17,11 @@ public class EventProducer {
 
     public EventProducer(final EventBus eventBus) {
     	final Properties props = new Properties();
-    	props.put("bootstrap.servers", "eagle5.di.uoa.gr:9092");
+    	props.put("bootstrap.servers", "172.19.0.18:9092");
     	props.put("key.serializer", "io.confluent.kafka.serializers.KafkaAvroSerializer");
     	props.put("value.serializer", "io.confluent.kafka.serializers.KafkaAvroSerializer");
         //props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-        props.put("schema.registry.url", "http://eagle5.di.uoa.gr:8081");
+        props.put("schema.registry.url", "http://172.19.0.18:8081");
         //props.put(KafkaAvroSerializerConfig. , true); 
 
         this.producer  = new KafkaProducer<>(props);
@@ -39,7 +39,4 @@ public class EventProducer {
             e.printStackTrace(System.err);
         }
     }
-	
-	
-	
 }

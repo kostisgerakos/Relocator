@@ -122,7 +122,7 @@ public class Relocator {
         }
 
         script = JSON_Generator.generateScript(nodeName, timestep+1, condition, nodeEvent).toString();
-        JSONObject experimentChangeRequest = JSON_Generator.generateExperimentChangeRequest(script);
+        JSONObject experimentChangeRequest = JSON_Generator.generateExperimentChangeRequest(script, false);
         //TODO producer to post experimentChangeRequest to RC
         
         
@@ -162,10 +162,15 @@ public class Relocator {
         if (checkDistance(newWaypoint, timestep + 1, nodeIndex))
             return false;
 
-        //TODO producer to post Goto command to the device
-        JSONObject newGoto =  JSON_Generator.generateGoto(JSON_parser.getDynamicGoto());
-        System.out.println(newGoto);
         return true;
+    }
+    
+    public void navigateDevices()
+    {
+    //TODO producer to post Goto command to the device
+    	JSONObject newGoto = JSON_Generator.generateGoto(JSON_parser.getDynamicGoto());
+    	System.out.println("new goto" + newGoto);
+
     }
 
     private boolean checkDistance(String waypoint, int timestep, int nodeIndex)

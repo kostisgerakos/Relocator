@@ -110,7 +110,7 @@ public class JSON_Generator {
         return script;
     }
 
-    public static JSONObject generateExperimentChangeRequest(String script)
+    public static JSONObject generateExperimentChangeRequest(String script, boolean dynamicNavigation)
     {
         JSONObject experimentChangeRequest, takeOffHeights;
 
@@ -126,7 +126,7 @@ public class JSON_Generator {
         experimentChangeRequest.element("accuracy", JSON_parser.getAccuracy());
         takeOffHeights.element("array", JSON_parser.getTakeOffHeights());
         experimentChangeRequest.element("takeOffHeights", takeOffHeights);
-        experimentChangeRequest.element("dynamicNavigation", true);
+        experimentChangeRequest.element("dynamicNavigation", dynamicNavigation);
 
         return experimentChangeRequest;
     }

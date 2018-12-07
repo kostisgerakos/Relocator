@@ -64,10 +64,10 @@ public class TestConsumers {
 		ArrayList<Quartet<String, Integer, Predicate, Goto>> quartetsWithPredicates = new ArrayList<>();
 		quartetsWithPredicates.add(quartet);
 		
-		MultiplePartitionConsumers partitonConsumerGroup = new MultiplePartitionConsumers(brokers, schemaRegistry,
+		/*MultiplePartitionConsumers partitonConsumerGroup = new MultiplePartitionConsumers(brokers, schemaRegistry,
 				groupId, quartetsWithPredicates, eventBus);
 		partitonConsumerGroup.execute();
-
+*/
 		try {
 			Thread.sleep(100000);
 		} catch (InterruptedException ie) {
