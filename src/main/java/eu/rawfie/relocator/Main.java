@@ -49,7 +49,7 @@ public class Main {
         /*parse data from json*/
 		//TODO remove once kafka consumers are included
 		topic      = "ExperimentStartRequest";
-		 Thread t = new Thread(new SinglePartitionConsumer("172.19.0.18:9092", "http://172.19.0.18:8081", "testSingle", topic, null,handle));
+		 Thread t = new Thread(new SinglePartitionConsumer("172.19.0.18:9092", "http://172.19.0.18:8081", "Relocate1", topic, null,handle));
 	      t.start();
 		//SinglePartitionConsumer single = new SinglePartitionConsumer("172.19.0.18:9092", "http://172.19.0.18:8081", "testSingle", topic, null,handle);
 
@@ -66,7 +66,7 @@ public class Main {
 		//static properties for now
 		String brokers = "172.19.0.18:9092";
 		String schemaRegistry = "http://172.19.0.18:8081";
-		String groupId = "RelocatorConsumersTesting";
+		String groupId = "Relocate2";
 		
 		Triplet<String, Integer, Predicate> triplet = Triplet.with(topic, 1, biggerthan);
 		Triplet<String, Integer, Predicate> triplet2 = Triplet.with(topic, 4, biggerthan);
