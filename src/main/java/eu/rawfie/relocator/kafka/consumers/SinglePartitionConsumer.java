@@ -30,6 +30,13 @@ public class SinglePartitionConsumer {
 		    this.partitionNumber = partitionNumber;    
 		    TopicPartition partition = new TopicPartition(this.topic, this.partitionNumber);
 		    consumer.assign(Arrays.asList(partition));
+		    while (true) {
+				//poll loop
+				final ConsumerRecords<String, GenericRecord> r = consumer.poll(1000);
+				for (ConsumerRecord<String, GenericRecord> rr : r) {
+					System.out.println(rr.value());
+				}
+			}
 		  }
 	  
 	  private static Properties createConsumerConfig(String brokers, String schemaRegistry, String groupId) {
