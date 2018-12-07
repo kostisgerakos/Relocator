@@ -1,10 +1,12 @@
 package eu.rawfie.relocator.JSON;
 
+import eu.rawfie.general.service.types.ExperimentChangeRequest;
 import eu.rawfie.uxv.commands.DynamicGoto;
 import eu.rawfie.uxv.commands.Goto;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class JSON_Generator {
@@ -110,9 +112,9 @@ public class JSON_Generator {
         return script;
     }
 
-    public static JSONObject generateExperimentChangeRequest(String script, boolean dynamicNavigation)
+    public static ExperimentChangeRequest generateExperimentChangeRequest(String script, boolean dynamicNavigation)
     {
-        JSONObject experimentChangeRequest, takeOffHeights;
+       /* JSONObject experimentChangeRequest, takeOffHeights;
 
         takeOffHeights = new JSONObject();
         experimentChangeRequest = new JSONObject();
@@ -126,8 +128,14 @@ public class JSON_Generator {
         experimentChangeRequest.element("accuracy", JSON_parser.getAccuracy());
         takeOffHeights.element("array", JSON_parser.getTakeOffHeights());
         experimentChangeRequest.element("takeOffHeights", takeOffHeights);
-        experimentChangeRequest.element("dynamicNavigation", dynamicNavigation);
+        experimentChangeRequest.element("dynamicNavigation", dynamicNavigation);*/
 
+        
+		ExperimentChangeRequest experimentChangeRequest = new ExperimentChangeRequest(String.valueOf(JSON_parser.getExecutionId()),
+				script, JSON_parser.getTestbedID(), JSON_parser.isIndoor(),  JSON_parser.getResourceNames(),  
+				JSON_parser.getPartitionids(), JSON_parser.getAccuracy(), JSON_parser.getTakeOffHeights(),dynamicNavigation);
+
+        
         return experimentChangeRequest;
     }
 

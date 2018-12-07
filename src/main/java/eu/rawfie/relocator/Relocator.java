@@ -122,11 +122,11 @@ public class Relocator {
         }
 
         script = JSON_Generator.generateScript(nodeName, timestep+1, condition, nodeEvent).toString();
-        JSONObject experimentChangeRequest = JSON_Generator.generateExperimentChangeRequest(script, false);
+        //JSONObject experimentChangeRequest = JSON_Generator.generateExperimentChangeRequest(script, false);
         //TODO producer to post experimentChangeRequest to RC
         
         
-        System.out.println(experimentChangeRequest);
+        //System.out.println(experimentChangeRequest);
         return true;
     }
 

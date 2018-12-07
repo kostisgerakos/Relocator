@@ -82,12 +82,12 @@ public class JSON_parser {
         experimentStartRequest.setResourceNames(jsonObject.getJSONArray("resourceNames"));
         experimentStartRequest.setScript(jsonObject.getString("script"));
         experimentStartRequest.setExecutionId(jsonObject.getString("executionId"));
-        experimentStartRequest.setTakeOffHeights(jsonObject.getJSONObject("takeOffHeights").getJSONArray("array"));
+        experimentStartRequest.setTakeOffHeights(jsonObject.getJSONArray("takeOffHeights"));
 
         parseEvents();
         parseScript();
-        setPartitions();
-        setPartitionMap();
+        //setPartitions();
+        //setPartitionMap();
     }
 
     private static void setPartitions()

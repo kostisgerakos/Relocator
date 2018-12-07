@@ -26,11 +26,11 @@ public class ExperimentChangeRequestProducer {
 		final KafkaProducer<String, GenericRecord> producer = new KafkaProducer<>(props);
 
 		String topic = "ExperimentChangeRequest";
-		producer.send(prod.getKeep(topic));
+		producer.send(prod.getExperiment(topic));
 		producer.close();
 
 	}
-	public ProducerRecord<String, GenericRecord> getKeep(String topic){
+	public ProducerRecord<String, GenericRecord> getExperiment(String topic){
 		ExperimentChangeRequest experimentChangeRequest = new ExperimentChangeRequest("reg","reg", "reg", false, Arrays.asList("reg"),  Arrays.asList(0), 0.0, Arrays.asList(0.0),false);
 		ProducerRecord<String, GenericRecord> record = new ProducerRecord<String, GenericRecord>("ExperimentChangeRequest","key", experimentChangeRequest);
 		return record;

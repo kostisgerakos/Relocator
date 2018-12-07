@@ -10,6 +10,7 @@ import org.javatuples.Triplet;
 import com.google.common.eventbus.EventBus;
 
 import eu.rawfie.general.service.types.ExperimentChangeRequest;
+import eu.rawfie.relocator.HandleEvents;
 import eu.rawfie.uxv.commands.Goto;
 
  
@@ -24,7 +25,7 @@ public class MultiplePartitionConsumers {
   private List<RunnablePartitionConsumer> partitionConsumers;
 
  
-  public MultiplePartitionConsumers(final String brokers,String schemaRegistry, String groupId,final ArrayList<Triplet<String,Integer,Predicate>> tripletsWithPredicates, final EventBus eventBus ) {
+  public MultiplePartitionConsumers(final String brokers,String schemaRegistry, String groupId,final ArrayList<Triplet<String,Integer,Predicate>> tripletsWithPredicates, final EventBus eventBus ,HandleEvents handle) {
     //this.brokers = brokers;
     //this.schemaRegistry = schemaRegistry;
     //this.groupId = groupId;
@@ -33,7 +34,7 @@ public class MultiplePartitionConsumers {
     partitionConsumers = new ArrayList<>();
     for (Triplet<String, Integer, Predicate> triplet : tripletsWithPredicates) {
     	RunnablePartitionConsumer ncThread =
-          new RunnablePartitionConsumer(brokers,schemaRegistry, groupId, triplet.getValue0(), triplet.getValue1(),triplet.getValue2(),eventBus);
+          new RunnablePartitionConsumer(brokers,schemaRegistry, groupId, triplet.getValue0(), triplet.getValue1(),triplet.getValue2(),eventBus,handle);
       partitionConsumers.add(ncThread);
       System.out.println("Started consumer for partition" + triplet.getValue1());
     }

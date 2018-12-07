@@ -9,38 +9,32 @@ import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.TopicPartition;
 
-public class SinglePartitionConsumer {
+import eu.rawfie.relocator.HandleEvents;
+
+public class SinglePartitionConsumer  implements Runnable {
 
 	private final KafkaConsumer<String, GenericRecord> consumer;
 	private final String topic;
-	private final int partitionNumber;
+	//private final int partitionNumber;
+	 HandleEvents handle;
 
 	public SinglePartitionConsumer(String brokers, String schemaRegistry, String groupId, String topic,
-			Integer partitionNumber) {
+			Integer partitionNumber, HandleEvents handle)  {
 		Properties prop = createConsumerConfig(brokers, schemaRegistry, groupId);
 		this.consumer = new KafkaConsumer<>(prop);
 		this.topic = topic;
+		this.handle = handle;
 		//this.partitionNumber = partitionNumber;
 		if (partitionNumber == null) {
 			consumer.subscribe(Arrays.asList(topic));
-			while (true) {
-				// poll loop
-				final ConsumerRecords<String, GenericRecord> r = consumer.poll(1000);
-				for (ConsumerRecord<String, GenericRecord> rr : r) {
-					System.out.println(rr.value());
-				}
-			}
+			System.out.println("started first");
+			
 		} else {
-			this.partitionNumber = partitionNumber;
-			TopicPartition partition = new TopicPartition(this.topic, this.partitionNumber);
+			//this.partitionNumber = partitionNumber;
+			TopicPartition partition = new TopicPartition(this.topic, partitionNumber);
 			consumer.assign(Arrays.asList(partition));
-			while (true) {
-				// poll loop
-				final ConsumerRecords<String, GenericRecord> r = consumer.poll(1000);
-				for (ConsumerRecord<String, GenericRecord> rr : r) {
-					System.out.println(rr.value());
-				}
-			}
+			System.out.println("started first");
+
 		}
 	}
 
@@ -56,6 +50,17 @@ public class SinglePartitionConsumer {
 		props.put("auto.offset.reset", "latest");
 
 		return props;
+	}
+
+	@Override
+	public void run() {
+		while (true) {
+	        final ConsumerRecords<String, GenericRecord> r = consumer.poll(1000);
+			for (ConsumerRecord<String, GenericRecord> rr : r) {
+				System.out.println(rr.value());
+				handle.receiveExperimentStartRequest(rr);
+			}
+		}		
 	}
 
 }

@@ -13,6 +13,7 @@ import org.apache.kafka.common.TopicPartition;
 import com.google.common.eventbus.EventBus;
 
 import eu.rawfie.general.service.types.ExperimentChangeRequest;
+import eu.rawfie.relocator.HandleEvents;
 import eu.rawfie.relocator.kafka.producers.TriggeredEvent;
 import eu.rawfie.uxv.CpuUsage;
 import eu.rawfie.uxv.commands.Goto;
@@ -27,8 +28,9 @@ public class RunnablePartitionConsumer implements Runnable {
   
   private final Predicate predicate;
   private final EventBus eventBus;
- 
-  public RunnablePartitionConsumer(String brokers, String schemaRegistry, String groupId, String topic, int partitionNumber, Predicate predicate, EventBus eventBus) {
+  HandleEvents handle;
+  
+  public RunnablePartitionConsumer(String brokers, String schemaRegistry, String groupId, String topic, int partitionNumber, Predicate predicate, EventBus eventBus,HandleEvents handle) {
     Properties prop = createConsumerConfig(brokers, schemaRegistry, groupId);
     this.consumer = new KafkaConsumer<>(prop);
     this.topic = topic;
@@ -36,7 +38,7 @@ public class RunnablePartitionConsumer implements Runnable {
     
     this.predicate = predicate;
     this.eventBus = eventBus;
-    
+    this.handle = handle;
     TopicPartition partition = new TopicPartition(this.topic, this.partitionNumber);
     consumer.assign(Arrays.asList(partition));
   }
@@ -64,7 +66,8 @@ public class RunnablePartitionConsumer implements Runnable {
 				TriggeredEvent event = new TriggeredEvent("hmod_Goto",partitionNumber,"key"); 
 			    eventBus.post(event);
 			}*/
-			eventBus.post(rr.toString());
+			//eventBus.post(rr.toString());
+			handle.receiveDynamicGoTo(rr);
 			//System.out.println(rr.value() + ", by partition: " + rr.partition());
 		}
     }
