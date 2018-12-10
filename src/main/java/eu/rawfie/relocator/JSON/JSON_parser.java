@@ -14,10 +14,7 @@ import java.util.*;
 
 public class JSON_parser {
 
-    //first dimension: devices,
-    //second dimension: timesteps
-    private static List<List<String>> paths;
-//    private static List<List<String>> algorithms;
+    private static List<List<String>> paths;    //first dimension: devices, second dimension: timesteps
     private static Map<String, NodeEvent> eventsMap;
     private static Map<Integer, String> partitionMap;
     private static List<List<JSONObject>> sensorsActDeact;
@@ -30,14 +27,12 @@ public class JSON_parser {
         dynamicGoto = new DynamicGoto();
         paths = new ArrayList<>();
         eventsMap = new HashMap<>();
-//        algorithms = new ArrayList<>();
         partitionMap = new HashMap<>();
         sensorsActDeact = new ArrayList<>();
         devicesForCameraActivation = new ArrayList<>();
         experimentStartRequest = new ExperimentStartRequest();
     }
 
-    //make it also handle multiple requests (map)
     public static void parseDynamicGoto(String request)
     {
         JSONObject jsonObject = JSONObject.fromObject(request);
@@ -145,13 +140,12 @@ public class JSON_parser {
     private static void parseScript()
     {
 
-        JSONArray data, nodes, sensorsActDeactArray, algorithms;
+        JSONArray data, nodes, sensorsActDeactArray;
         JSONObject sensorsActDeact;
-        String waypoints, algorithm;
+        String waypoints;
 
         for(int i = 0; i <experimentStartRequest.getResourceNames().size(); i++) {
             paths.add(new ArrayList<>());
-//            JSON_parser.algorithms.add(new ArrayList<>());
             JSON_parser.sensorsActDeact.add(new ArrayList<>());
         }
 
@@ -159,8 +153,6 @@ public class JSON_parser {
         for (int timestep = 0; timestep < data.size(); timestep++) {
             nodes = ((data.getJSONObject(timestep)).getJSONArray("location"))
                     .getJSONObject(1).getJSONArray("nodes");
-//            algorithms = ((data.getJSONObject(timestep)).getJSONArray("location"))
-//                    .getJSONObject(1).getJSONArray("algorithms");
             sensorsActDeactArray = ((data.getJSONObject(timestep)).getJSONArray("location"))
                     .getJSONObject(1).getJSONArray("sensors");
 
@@ -173,9 +165,6 @@ public class JSON_parser {
                 if(sensorsActDeact.getString("sensorsActDeact").contains("CameraImage")){
                     devicesForCameraActivation.add(getResourceNames().get(i).toString());
                 }
-
-//                algorithm = (algorithms.getJSONObject(i)).get("algorithm").toString();
-//                JSON_parser.algorithms.get(i).add(algorithm);
             }
         }
     }
@@ -191,6 +180,14 @@ public class JSON_parser {
         return sensorsAD;
     }
 
+    public static JSONObject getSensorsActDeact(int nodeIndex, int timestep)
+    {
+        JSONObject sensorsAD;
+        sensorsAD = sensorsActDeact.get(nodeIndex).get(timestep);
+
+        return sensorsAD;
+    }
+
     public static String getTestbed()
     {
         JSONObject script = JSONObject.fromObject(experimentStartRequest.getScript());
@@ -201,6 +198,11 @@ public class JSON_parser {
     {
         JSONObject script = JSONObject.fromObject(experimentStartRequest.getScript());
         return script.getString("TestbedArea");
+    }
+
+    public static JSONArray getAlgorithms(int timestep) {
+        return ((getScriptData().getJSONObject(timestep)).getJSONArray("location"))
+                .getJSONObject(1).getJSONArray("algorithms");
     }
 
     public static DynamicGoto getDynamicGoto() { return dynamicGoto; }

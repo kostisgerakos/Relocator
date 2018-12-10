@@ -11,7 +11,7 @@ import java.util.List;
 
 public class JSON_Generator {
 
-    public static JSONObject generateGoto(DynamicGoto dynamicGoto)
+    public static JSONObject generateExperimentChangeRequest(DynamicGoto dynamicGoto)
     {
         JSONObject jsonObject, header, location;
 
@@ -41,6 +41,70 @@ public class JSON_Generator {
 
         return jsonObject;
     }
+
+    public static JSONObject generateScript(int timestep, DynamicGoto dynamicGoto, int partition)
+    {
+        JSONArray data = new JSONArray();
+        JSONArray nodes = new JSONArray();
+        JSONArray sensors = new JSONArray();
+        JSONArray algorithms = new JSONArray();
+        JSONObject jsonObject = new JSONObject();
+
+        for(int i = 0; i < JSON_parser.getResourceNames().size(); i++) {
+            JSONObject node = new JSONObject();
+
+            /*handling information from lists is done with indexes;
+             * use partition to find the index of the node that is dynamically
+             * reallocated and is required to add the new path to the script.
+             */
+            if(i == JSON_parser.getPartitionids().indexOf(partition)){
+                String newPath;
+                if(JSON_parser.isIndoor()){
+                    newPath = dynamicGoto.getLocation().getLatitude().toString() +
+                            dynamicGoto.getLocation().getLongitude().toString()+
+                            dynamicGoto.getLocation().getHeight().toString();
+                }
+                else{
+                    newPath = dynamicGoto.getLocation().getN().toString() +
+                            dynamicGoto.getLocation().getE().toString()+
+                            dynamicGoto.getLocation().getD().toString();
+                }
+                node.element("nodeCommand", "goto");
+                node.element("node", newPath);
+                nodes.add(node);
+            }
+            else {
+                node.element("nodeCommand", "goto");
+                node.element("node", JSON_parser.getPaths().get(i).get(timestep));
+                nodes.add(node);
+            }
+
+            sensors.add(JSON_parser.getSensorsActDeact(i, timestep));
+            algorithms.element((JSON_parser.getAlgorithms(timestep).getJSONObject(i)).get("algorithm"));
+        }
+
+        JSONArray location = new JSONArray();
+        JSONObject timesteps = new JSONObject();
+        timesteps.element("timestep", timestep);
+        jsonObject.element("nodes", nodes);
+        jsonObject.element("sensors", sensors);
+        jsonObject.element("algorithms", algorithms);
+        location.add(timesteps);
+        location.add(jsonObject);
+        jsonObject = new JSONObject();
+        jsonObject.element("location", location);
+        data.add(jsonObject);
+
+        JSONObject script = new JSONObject();
+        script.element("data", data);
+        script.element("nodeNames", JSON_parser.getNodeNames());
+        script.element("nodeEvents", JSON_parser.getNodeEvents());
+        script.element("Testbed", JSON_parser.getTestbed());
+        script.element("TestbedArea", JSON_parser.getTestbedArea());
+
+        return script;
+    }
+
 
     public static JSONObject generateScript(String nodeName, int timestep, String condition, NodeEvent nodeEvent)
     {
@@ -106,6 +170,7 @@ public class JSON_Generator {
 
         script.element("data", data);
         script.element("nodeNames", nodenames);
+        script.element("nodeEvents", JSON_parser.getNodeEvents());
         script.element("Testbed", JSON_parser.getTestbed());
         script.element("TestbedArea", JSON_parser.getTestbedArea());
 
@@ -130,12 +195,12 @@ public class JSON_Generator {
         experimentChangeRequest.element("takeOffHeights", takeOffHeights);
         experimentChangeRequest.element("dynamicNavigation", dynamicNavigation);*/
 
-        
+
 		ExperimentChangeRequest experimentChangeRequest = new ExperimentChangeRequest(String.valueOf(JSON_parser.getExecutionId()),
-				script, JSON_parser.getTestbedID(), JSON_parser.isIndoor(),  JSON_parser.getResourceNames(),  
+				script, JSON_parser.getTestbedID(), JSON_parser.isIndoor(),  JSON_parser.getResourceNames(),
 				JSON_parser.getPartitionids(), JSON_parser.getAccuracy(), JSON_parser.getTakeOffHeights(),dynamicNavigation);
 
-        
+
         return experimentChangeRequest;
     }
 

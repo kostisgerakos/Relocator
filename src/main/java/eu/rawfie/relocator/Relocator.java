@@ -23,6 +23,10 @@ public class Relocator {
         this.lastTimestep = -1;
     }
 
+    public int getLastTimestep() {
+        return lastTimestep;
+    }
+
     public void setMinDistance(double minDistance)
     {
         this.minDistance = minDistance;
@@ -168,7 +172,7 @@ public class Relocator {
     public void navigateDevices()
     {
     //TODO producer to post Goto command to the device
-    	JSONObject newGoto = JSON_Generator.generateGoto(JSON_parser.getDynamicGoto());
+    	JSONObject newGoto = JSON_Generator.generateExperimentChangeRequest(JSON_parser.getDynamicGoto());
     	System.out.println("new goto" + newGoto);
 
     }

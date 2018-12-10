@@ -39,14 +39,14 @@ public class HandleEvents {
         System.out.println(dn);
 
         if(dn){
-            String data = JSON_parser.getScriptData().toString();
-            
-            JSONObject script = new JSONObject( );
-            script.element("data", data);
-            script.element("nodeNames", JSON_parser.getNodeNames());
-            script.element("nodeEvents", JSON_parser.getNodeEvents());
-            script.element("Testbed", JSON_parser.getTestbed());
-            script.element("TestbedArea", JSON_parser.getTestbedArea());
+//            String data = JSON_parser.getScriptData().toString();
+            JSONObject script = JSON_Generator.generateScript(relocator.getLastTimestep(),
+                    JSON_parser.getDynamicGoto(), record.partition());
+//            script.element("data", data);
+//            script.element("nodeNames", JSON_parser.getNodeNames());
+//            script.element("nodeEvents", JSON_parser.getNodeEvents());
+//            script.element("Testbed", JSON_parser.getTestbed());
+//            script.element("TestbedArea", JSON_parser.getTestbedArea());
             
             //if(!experimentChanged) {
             	experimentChanged = true;

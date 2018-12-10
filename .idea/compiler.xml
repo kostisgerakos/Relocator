@@ -6,8 +6,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="Kafka-Clients" />
+        <module name="Relocator" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="Relocator" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
 </project>
