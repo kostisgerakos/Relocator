@@ -53,10 +53,9 @@ public class JSON_Generator {
         for(int i = 0; i < JSON_parser.getResourceNames().size(); i++) {
             JSONObject node = new JSONObject();
 
-            /*handling information from lists is done with indexes;
+            /* handling information from lists is done with indexes;
              * use partition to find the index of the node that is dynamically
-             * reallocated and is required to add the new path to the script.
-             */
+             * reallocated and is required to add the new path to the script.*/
             if(i == JSON_parser.getPartitionids().indexOf(partition)){
                 String newPath;
                 if(JSON_parser.isIndoor()){
@@ -75,7 +74,16 @@ public class JSON_Generator {
             }
             else {
                 node.element("nodeCommand", "goto");
-                node.element("node", JSON_parser.getPaths().get(i).get(timestep));
+                int lastTimestep = JSON_parser.getPaths().get(i).size() - 1;
+                /*if the initial waypoints of a device are completed,
+                * resend the last waypoint as long as new dynamic
+                * waypoints arrive for another device*/
+                if(lastTimestep < timestep){
+                    node.element("node", JSON_parser.getPaths().get(i).get(lastTimestep));
+                }
+                else{
+                    node.element("node", JSON_parser.getPaths().get(i).get(timestep));
+                }
                 nodes.add(node);
             }
 

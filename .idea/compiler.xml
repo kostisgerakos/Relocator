@@ -9,8 +9,5 @@
         <module name="Relocator" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="Relocator" target="1.8" />
-    </bytecodeTargetLevel>
   </component>
 </project>
