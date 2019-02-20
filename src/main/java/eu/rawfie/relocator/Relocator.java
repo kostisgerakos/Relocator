@@ -191,6 +191,11 @@ public class Relocator {
             if(i == nodeIndex)
                 continue;
 
+            /*if the relocation occurs at the
+             * last waypoint of the initial path*/
+            if(timestep == paths.get(i).size()) {
+                timestep -= 1;
+            }
             location = paths.get(i).get(timestep);
             locationCoordinates = location.split(",");
 
