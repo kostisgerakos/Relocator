@@ -20,6 +20,7 @@ public class Relocator {
 
     public Relocator()
     {
+        this.minDistance  = 5;
         this.lastTimestep = -1;
     }
 
