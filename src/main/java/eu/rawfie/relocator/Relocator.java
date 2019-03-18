@@ -1,25 +1,32 @@
 package eu.rawfie.relocator;
 
+import com.vividsolutions.jts.geom.*;
+import com.vividsolutions.jts.geom.Point;
 import eu.rawfie.relocator.JSON.JSON_Generator;
 import eu.rawfie.relocator.JSON.JSON_parser;
 import eu.rawfie.relocator.JSON.NodeEvent;
 import eu.rawfie.relocator.REST.StartRecordClient;
 import eu.rawfie.relocator.REST.StopRecordClient;
 import eu.rawfie.relocator.coordinates.*;
+import eu.rawfie.relocator.database.Database;
 import eu.rawfie.uxv.Header;
 import eu.rawfie.uxv.Location;
 import eu.rawfie.uxv.commands.DynamicGoto;
 import net.sf.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Relocator {
 
     private int lastTimestep;
     private double minDistance;
+    private Polygon[] testbedObstacles;
 
     public Relocator()
     {
+        this.minDistance  = 5;
         this.lastTimestep = -1;
     }
 
@@ -49,6 +56,53 @@ public class Relocator {
     {
         return cartesianDistance(pointA.north, pointA.east, pointA.down,
                 pointB.north, pointB.east, pointB.down);
+    }
+
+    public void initTestbedObstacles()
+    {
+        /*create testbed obstacles polygons*/
+        GeometryFactory geometryFactory = new GeometryFactory();
+        String obstaclesStr = Database.getTestbedObstacles(JSON_parser.getTestbedArea());
+        if ( obstaclesStr == null )
+            return;
+
+        List<String> transformedPoints;
+        String [] strs = obstaclesStr.split("&");
+        testbedObstacles = new Polygon[strs.length];
+        for(int i = 0; i < strs.length; i++){
+            transformedPoints = tranformPoints(strs[i]);
+            testbedObstacles[i] = createPolygon(geometryFactory, transformedPoints);
+        }
+    }
+
+    private Polygon createPolygon(GeometryFactory geometryFactory, List<String> transformedPoints)
+    {
+        Coordinate[] coordinates = new Coordinate[transformedPoints.size()];
+
+        for (int i = 0; i < transformedPoints.size(); i++) {
+            String [] strs = transformedPoints.get(i).split(" ");
+            coordinates[i] = new Coordinate(Double.parseDouble(strs[0]), Double.parseDouble(strs[1]));
+        }
+
+        return geometryFactory.createPolygon(coordinates);
+    }
+
+    private List<String> tranformPoints(String points)
+    {
+        StringBuilder finalCoords = new StringBuilder("");
+        String [] strs = points.substring(1, points.length() - 1).split("\\),");
+
+        for(String str: strs){
+            str = str.replace("(", "");
+            str = str.replace(",", " ");
+            finalCoords.append(str).append(", ");
+        }
+        /*remove last 2 character, because they
+         are a comma and a left parenthesis*/
+        finalCoords.setLength(finalCoords.length() - 3);
+        strs = finalCoords.toString().split(", ");
+
+        return new ArrayList<>(Arrays.asList(strs));
     }
 
     private int getTimestep(int nodeIndex, Location currentLocation)
@@ -113,24 +167,59 @@ public class Relocator {
         nodeIndex = JSON_parser.getResourceNames().indexOf(nodeName);
         timestep = getTimestep(nodeIndex, currentLocation);
         newWaypoints = nodeEvent.getWaypoints(condition);
+        Coordinate[] coordinates = new Coordinate[newWaypoints.size()+1];
 
-        for (int j = 0; j < newWaypoints.size(); j++){
+        /*check the path line from the last waypoint
+         * of the initial path towards the new path*/
+        double lat, lon, height;
+        if(JSON_parser.isIndoor()){
+            lat = currentLocation.getN();
+            lon = currentLocation.getE();
+            height = currentLocation.getD();
+        }
+        else{
+            lat = currentLocation.getLatitude();
+            lon = currentLocation.getLongitude();
+            height = currentLocation.getHeight();
+        }
+        coordinates[0] = new Coordinate(lat, lon, height);
+        for (int i = 0; i < newWaypoints.size();) {
+
+            String[] coords = newWaypoints.get(i).split(",");
+            lat = Double.parseDouble(coords[1]);
+            lon = Double.parseDouble(coords[0]);
+            height = Double.parseDouble(coords[2]);
+            coordinates[++i] = new Coordinate(lat, lon, height);
 
             /*check if new waypoint is inside the testbed area*/
-//            if(!Database.inTestbedArea(JSON_parser.getTestbedID(), newWaypoints.get(j)))
-//                return false;
+            if (Database.inTestbedArea(JSON_parser.getTestbedID(), newWaypoints.get(i))) {
+                GeometryFactory geometryFactory = new GeometryFactory();
+                Point point = geometryFactory.createPoint(new Coordinate(lat, lon));
 
-            /*check distance from each node at the next timestep*/
-            if (checkDistance(newWaypoints.get(j), timestep + j + 1, nodeIndex))
+                for (Polygon obstacle : testbedObstacles) {
+                    /* collision with testbed obstacle */
+                    if (obstacle.contains(point))
+                        return false;
+                }
+
+                /*check distance from each node at the next timestep*/
+                if (checkDistance(newWaypoints.get(i), timestep + 1, nodeIndex))
+                    return false;
+            }
+        }
+        /*check that the new path line does not cross any obstacles */
+        GeometryFactory geometryFactory = new GeometryFactory();
+        LineString lineString = geometryFactory.createLineString(coordinates);
+        for (Polygon obstacle : testbedObstacles) {
+            /* collision with testbed obstacle */
+            if(lineString.crosses(obstacle))
                 return false;
         }
 
         script = JSON_Generator.generateScript(nodeName, timestep+1, condition, nodeEvent).toString();
         //JSONObject experimentChangeRequest = JSON_Generator.generateExperimentChangeRequest(script, false);
         //TODO producer to post experimentChangeRequest to RC
-        
-        
-        //System.out.println(experimentChangeRequest);
+
         return true;
     }
 
@@ -138,44 +227,78 @@ public class Relocator {
     {
         String newWaypoint;
         int timestep, nodeIndex;
-
+        double lat, lon, height;
 
         /*the current location of the node that sent the request for the alternative path*/
         //TODO consume location of device here
-        Location currentLocation = new Location(new Header("test","test",(long) 1000000000),10.0, 20.0, 30.0f,
+        Location location = new Location(new Header("test","test",(long) 1000000000),10.0, 20.0, 30.0f,
                 0.0, 0.0, 0.0, 0.0f, 0.0f);
 
         nodeIndex = JSON_parser.getPartitionids().indexOf(partition);
-        timestep = getTimestep(nodeIndex, currentLocation);
+        if(lastTimestep == -1) {
+            timestep = getTimestep(nodeIndex, location);
+        }
+        else {
+            timestep = lastTimestep;
+        }
 
+        Coordinate[] coordinates = new Coordinate[2];
         if(JSON_parser.isIndoor()){
+            lat = location.getN();
+            lon = location.getE();
+            height = location.getD();
+            coordinates[0] = new Coordinate(lat, lon, height);
+
+            lat = dynamicGoto.getLocation().getLatitude();
+            lon = dynamicGoto.getLocation().getLongitude();
+            height = dynamicGoto.getLocation().getHeight();
+            coordinates[1] = new Coordinate(lat, lon, height);
+
             newWaypoint = dynamicGoto.getLocation().getN().toString() + "," +
-                          dynamicGoto.getLocation().getE().toString() + "," +
-                          dynamicGoto.getLocation().getD().toString();
+                    dynamicGoto.getLocation().getE().toString() + "," +
+                    dynamicGoto.getLocation().getD().toString();
         }
         else{
+            lat = location.getLatitude();
+            lon = location.getLongitude();
+            height = location.getHeight();
+            coordinates[0] = new Coordinate(lat, lon, height);
+
+            lat = dynamicGoto.getLocation().getLatitude();
+            lon = dynamicGoto.getLocation().getLongitude();
+            height = dynamicGoto.getLocation().getHeight();
+            coordinates[1] = new Coordinate(lat, lon, height);
+
             newWaypoint = dynamicGoto.getLocation().getLatitude().toString() + "," +
-                          dynamicGoto.getLocation().getLongitude().toString() + "," +
-                          dynamicGoto.getLocation().getHeight();
+                    dynamicGoto.getLocation().getLongitude().toString() + "," +
+                    dynamicGoto.getLocation().getHeight();
         }
         /*check if new waypoint is inside the testbed area*/
-//      if(!Database.inTestbedArea(JSON_parser.getTestbedID(), newWaypoints.get(j)))
-//          return false;
+        if(Database.inTestbedArea(JSON_parser.getTestbedID(), newWaypoint)){
+            String[] coords = newWaypoint.split(",");
+            lat = Double.parseDouble(coords[1]);
+            lon = Double.parseDouble(coords[0]);
+            GeometryFactory geometryFactory = new GeometryFactory();
+            Point point = geometryFactory.createPoint(new Coordinate(lat, lon));
+            LineString lineString = geometryFactory.createLineString(coordinates);
 
-        /*check distance from each node at the next timestep*/
-        if (checkDistance(newWaypoint, timestep + 1, nodeIndex))
-            return false;
+            for(Polygon obstacle : testbedObstacles){
+                /* collision with testbed obstacle */
+                if(obstacle.contains(point))
+                    return false;
+                /*check the path line from the current
+                 * location towards the new waypoint*/
+                if(lineString.crosses(obstacle))
+                    return false;
+            }
+
+            /*check distance from each node at the next timestep*/
+            return !checkDistance(newWaypoint, timestep + 1, nodeIndex);
+        }
 
         return true;
     }
-    
-    public void navigateDevices()
-    {
-    //TODO producer to post Goto command to the device
-    	JSONObject newGoto = JSON_Generator.generateExperimentChangeRequest(JSON_parser.getDynamicGoto());
-    	System.out.println("new goto" + newGoto);
 
-    }
 
     private boolean checkDistance(String waypoint, int timestep, int nodeIndex)
     {
@@ -187,15 +310,15 @@ public class Relocator {
         paths = JSON_parser.getPaths();
         waypointCoordinates = waypoint.split(",");
 
+        /*if the relocation occurs at the
+         * last waypoint of the initial path*/
+        if(timestep == paths.get(nodeIndex).size()) {
+            timestep -= 1;
+        }
         for(int i = 0; i < paths.size(); i++){
             if(i == nodeIndex)
                 continue;
 
-            /*if the relocation occurs at the
-             * last waypoint of the initial path*/
-            if(timestep == paths.get(i).size()) {
-                timestep -= 1;
-            }
             location = paths.get(i).get(timestep);
             locationCoordinates = location.split(",");
 
@@ -233,26 +356,6 @@ public class Relocator {
         return false;
     }
 
-
-
-//    public void cameraActivation() throws InterruptedException
-//    {
-//        String url, stopService;
-//        JSONObject cameraActivationJSON;
-//        List<String> devicesForCameraActivation;
-//
-//        devicesForCameraActivation = json_parser.getDevicesForCameraActivation();
-//        if(devicesForCameraActivation.size() > 0){
-//            cameraActivationJSON = json_generator.generateCameraActivation();
-//
-//            //send json
-//            url = "http://195.134.67.223:4444/capture/start";
-//            stopService = "http://195.134.67.223:4444/capture/stop";
-//            StartRecordClient record = new StartRecordClient(url, cameraActivationJSON.toString(), stopService);
-//            Thread.sleep(10000);
-//            record.getStopClient().sendMessage();
-//        }
-//    }
 
     public String cameraActivation()
     {

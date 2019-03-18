@@ -94,6 +94,36 @@ public class Database {
         return polygon;
     }
 
+    public static String getTestbedObstacles(String testbedArea)
+    {
+        String query, polygon = null;
+        ResultSet results = null;
+        Connection connection = null;
+        PreparedStatement statement = null;
+
+        try {
+            connection = establishConnection();
+
+            query = "select obstacles_validation from public.testbed_area where name = ?";
+            assert connection != null;
+            statement = connection.prepareStatement(query);
+            statement.setString(1, testbedArea);
+            results = statement.executeQuery();
+
+            while(results.next()) {
+                polygon = results.getString(1);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        } finally {
+            closeConnection(connection, statement, results);
+        }
+
+        return polygon;
+    }
+
     public static List<String> getSensors(String nodeName)
     {
         List<String> sensors = new ArrayList<>();
